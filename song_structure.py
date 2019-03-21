@@ -1,3 +1,5 @@
+import numpy as np
+
 class song_structure():
     
     def __init__(self, numVerses = 0, hasBridge = False, hasPrechorus = False):
@@ -9,7 +11,7 @@ class song_structure():
         self.hasPrechorus = hasPrechorus
         
  
-    def make_structure():
+    def make_structure(random = False):
         
         """We will define the structure using a series of characters,
         C = chorus
@@ -24,18 +26,46 @@ class song_structure():
         ...VCBC
         """
         
-        if self.hasPrechorus == True:
-            chorusChunk = "PC"
-        else:
-            chorusChunk = "C"
-        
         structure = ""
+        
+        if random == False:
+        
+            if self.hasPrechorus == True:
+                chorusChunk = "PC"
+            else:
+                chorusChunk = "C"
+
             
-        for i in range(self.numVerses):
-            structure = structure + "V" + chorusChunk
+
+            for i in range(self.numVerses):
+                structure = structure + "V" + chorusChunk
+
+            if self.hasBridge == True:
+                structure = structure + "B" + chorusChunk
+        
+        else:
             
-        if self.hasBridge == True:
-            structure = structure + "B" + chorusChunk
+            #decide if we'll add a prechorus
+            if self.hasPrechorus == True :
+                chorusChunk = np.random.choice("", "P") + "C"
+            else:
+                chorusChunk = "C"
+                
+            n = 1
+            structure = "V"
+            
+            
+            while n < numVerses:
+                
+                if np.random.random() < 0.6:
+                    structure = structure + "V"
+                    n = n + 1
+                else:
+                    structure = structure + chorusChunk
+            
+            if self.hasBridge == True and np.random.random <= 0.5:
+                structure = structure + "BC"
+                
         
         return structure      
-                
+    
