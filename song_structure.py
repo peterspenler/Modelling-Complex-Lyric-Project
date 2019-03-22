@@ -56,12 +56,12 @@ class song_structure():
             
             
             while n < numVerses:
-                
-                if np.random.random() < 0.6:
+                newVerses = np.random.choice(range(numVerses - n)) - 1
+                for i in newVerses:
                     structure = structure + "V"
                     n = n + 1
-                else:
-                    structure = structure + chorusChunk
+            
+            structure = structure + chorusChunk
             
             if self.hasBridge == True and np.random.random <= 0.5:
                 structure = structure + "BC"
