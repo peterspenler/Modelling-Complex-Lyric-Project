@@ -6,12 +6,12 @@ class song_structure():
         """Initializes the attributes.
         """
         
-        self.nVerses = numVerses
+        self.numVerses = numVerses
         self.hasBridge = hasBridge
         self.hasPrechorus = hasPrechorus
         
  
-    def make_structure(random = False):
+    def make_structure(self, random = False):
         
         """We will define the structure using a series of characters,
         C = chorus
@@ -45,25 +45,23 @@ class song_structure():
         
         else:
             
+            chorusChunk = "C"
+            
             #decide if we'll add a prechorus
-            if self.hasPrechorus == True :
-                chorusChunk = np.random.choice("", "P") + "C"
-            else:
-                chorusChunk = "C"
+            if self.hasPrechorus == True and np.random.random() <= 0.5:
+                chorusChunk = 'PC' 
                 
-            n = 1
-            structure = "V"
+            n = 0
             
-            
-            while n < numVerses:
-                
-                if np.random.random() < 0.6:
+            while n < self.numVerses:
+                newVerses = np.random.randint(self.numVerses - n) + 1
+                for i in range(newVerses):
                     structure = structure + "V"
                     n = n + 1
-                else:
-                    structure = structure + chorusChunk
             
-            if self.hasBridge == True and np.random.random <= 0.5:
+                structure = structure + chorusChunk
+            
+            if self.hasBridge == True and np.random.random() <= 0.5:
                 structure = structure + "BC"
                 
         
