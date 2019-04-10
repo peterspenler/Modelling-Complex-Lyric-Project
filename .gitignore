@@ -1,4 +1,9 @@
-data/
+data/chorus/
+data/verse/
+data/bridge/
+data/tmp/
+data/prechorus/
+data/models/
 test_data/
 test_data*/
 fastai_new/
