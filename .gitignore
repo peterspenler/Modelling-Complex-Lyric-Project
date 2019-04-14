@@ -1,4 +1,14 @@
-#Uneccesary Folders#
-**/model
-**/style-gen-master
-**/test_data
+data/chorus/
+data/verse/
+data/bridge/
+data/tmp/
+data/prechorus/
+data/models/
+test_data/
+test_data*/
+fastai_new/
+__pycache__/
+.ipynb_checkpoints/
+
+key.py
+

@@ -1,6 +1,7 @@
 import os, re
 
 directory = "test_data/"
+write_dir = "data/"
 
 def clear_whitelines(data):
 	result = data
@@ -17,22 +18,26 @@ def split_components(data):
     prechorus = ""
     
     #this will help us identify the song component
-    data = data.replace(']', ' ]')
+    data = data.replace('[?]', '').replace("(Hook)", "[Hook]").replace("(Chorus)", "[Chorus]").replace("(hook)", "[hook]").replace("(chorus)", "[chorus]").replace(']', ' ]')
     
     components = data.split('[')
+
+    #if components
     
     for i in components:
-        if i.split(" ")[0] == "Chorus" and chorus == "":
-            chorus = i.split("]")[1]
+        j = i.split("]")
+        if (len(j[0]) < 70) and (len(j) > 1):
+            if (("chorus" in j[0].lower()) or ("hook" in j[0].lower())) and (chorus == ""):
+                chorus = j[1]
         
-        elif i.split(" ")[0] == "Verse":
-            verses.append(i.split("]")[1])
+            elif "verse" in j[0].lower():
+                verses.append(j[1])
         
-        elif i.split(" ")[0] == "Bridge":
-            bridges.append(i.split("]")[1])
+            elif "bridge" in j[0].lower():
+                bridges.append(j[1])
         
-        elif i.split(" ")[0] == "Pre-Chorus":
-            prechorus = i.split("]")[1]
+            elif "pre-chorus" in j[0].lower() or "pre chorus" in j[0].lower():
+                prechorus = i.split("]")[1]
     
     return chorus, prechorus, verses, bridges
 
@@ -47,43 +52,49 @@ def prepare_chars(data):
     
     return result
 
-def add_to_corpus(corpus, toAdd):
+def add_to_corpus(type, toAdd, count):
     
-    data = prepare_chars(data)
+    data = prepare_chars(toAdd)
     
-    if len(data) > 0:
-        corpus.write(data + '\n\n')
+    if len(toAdd) > 0:
+        if not os.path.exists(write_dir + type + "/"):
+            os.makedirs(write_dir + type + "/")
+        corpus = open(write_dir + type + "/data_" + str(count) + ".lyc", 'w')
+        corpus.write(toAdd.strip())
+        corpus.close()
+        return 1
+    else:
+        return 0
 
-chorusCorpus = open('corpus_chorus.lyc', 'w')
-prechorusCorpus = open('corpus_prechorus.lyc', 'w')
-verseCorpus = open('corpus_verse.lyc', 'w')
-bridgeCorpus = open('corpus_bridge.lyc', 'w')
 
-total = len(os.listdir(directory))
-count = 1
+def pre_proccess():
+	chorusC = 0
+	prechorusC = 0
+	verseC = 0
+	bridgeC = 0
 
-for filename in os.listdir(directory):
-	print("Adding " + str(count) + '/' + str(total) + " to corpus", end='\r')
-	f = open("test_data/" + filename, 'r')
-	data = clear_whitelines(f.read())
-    
-	if data.count('\n') >= 14:
-        
-        chorus, prechorus, verses, bridges = split_components(data)
-        
-        add_to_corpus(chorusCorpus, chorus)
-        add_to_corpus(prechorusCorpus, prechorus)
-        for data in verses:
-            add_to_corpus(verseCorpus, data)
-        for data in bridges:
-            add_to_corpus(bridgeCorpus, data)
-            
-        
-	f.close()
-	count += 1
 
-chorusCorpus.close()
-prechorusCorpus.close()
-verseCorpus.close()
-bridgeCorpus.close()
-print("\nCorpus complete" + ' ' * 100)
+	total = len(os.listdir(directory))
+	count = 1
+
+	for filename in os.listdir(directory):
+		print("Adding " + str(count) + '/' + str(total) + " to corpus", end='\r')
+		f = open("test_data/" + filename, 'r')
+		data = clear_whitelines(f.read())
+	    
+		if data.count('\n') >= 14:
+		
+			chorus, prechorus, verses, bridges = split_components(data)
+			
+			chorusC += add_to_corpus("chorus", chorus, chorusC)
+			prechorusC += add_to_corpus("prechorus", prechorus, prechorusC)
+			for verse in verses:
+			    verseC += add_to_corpus("verse", verse, verseC)
+			for bridge in bridges:
+			    bridgeC += add_to_corpus("bridge", bridge, bridgeC)
+			    
+			
+		f.close()
+		count += 1
+
+	print("\nCorpus complete" + ' ' * 100)
