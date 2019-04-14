@@ -18,23 +18,26 @@ def split_components(data):
     prechorus = ""
     
     #this will help us identify the song component
-    data = data.replace(']', ' ]')
+    data = data.replace('[?]', '').replace("(Hook)", "[Hook]").replace("(Chorus)", "[Chorus]").replace("(hook)", "[hook]").replace("(chorus)", "[chorus]").replace(']', ' ]')
     
     components = data.split('[')
+
+    #if components
     
     for i in components:
         j = i.split("]")
-        if len(j[0]) < 20:
-            if ("chorus" in j[0].lower() or "hook" in j[0].lower())and chorus == "":
+        if len(j[0]) < 70:
+            if (("chorus" in j[0].lower()) or ("hook" in j[0].lower())) and (chorus == "") and (len(j) > 1):
+                print("HIT")
                 chorus = j[1]
         
-            elif "verse" in j[0].lower():
+            elif "verse" in j[0].lower() and (len(j) > 1):
                 verses.append(j[1])
         
-            elif "bridge" in j[0].lower():
+            elif "bridge" in j[0].lower() and (len(j) > 1):
                 bridges.append(j[1])
         
-            elif "pre-chorus" in j[0].lower() or "pre chorus" in j[0].lower():
+            elif "pre-chorus" in j[0].lower() or "pre chorus" in j[0].lower() and (len(j) > 1):
                 prechorus = i.split("]")[1]
     
     return chorus, prechorus, verses, bridges
@@ -90,7 +93,7 @@ for filename in os.listdir(directory):
 		    bridgeC += add_to_corpus("bridge", bridge, bridgeC)
 		    
 		
-		f.close()
+	f.close()
 	count += 1
 
 print("\nCorpus complete" + ' ' * 100)
