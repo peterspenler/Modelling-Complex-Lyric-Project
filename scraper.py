@@ -117,35 +117,36 @@ def save_lyrics(lyrics, filename, hit):
 	f.close()
 	print("Wrote " + filename)
 
-artists = []
+def get_lyrics(searches):
+	artists = []
 
-if len(sys.argv) < 2:
-	print('Takes 1 argument, received ' + str(len(sys.argv) - 1))
-	sys.exit()
+	if len(searches) < 2:
+		print('Need at least 1 artist')
+		sys.exit()
 
-for i in range(1,len(sys.argv)):
-	print("Searching for artist '" + sys.argv[i] + "'")
-	song = request_song_info(sys.argv[i])
-	if song >= 0:
-		artists.append(song)
+	for i in range(len(searches)):
+		print("Searching for artist '" + searches[i] + "'")
+		song = request_song_info(searches[i])
+		if song >= 0:
+			artists.append(song)
 
-for id in artists:
-	page = 1
-	while True:
-		songs, next_page = request_artist_songs(str(id), '20', page)
+	for id in artists:
+		page = 1
+		while True:
+			songs, next_page = request_artist_songs(str(id), '20', page)
 
-		if songs != None:
-			for hit in songs:
-				if hit['primary_artist']['id'] == id:
-					lyrics = lyrics_from_hit(hit)
-					if lyrics != None and lyrics != '':
-						save_lyrics(lyrics, hit['full_title'][:50].replace('/', '') + '.lyc', hit)
-		else:
-			print("Encountered an error")
-			break
-		if not next_page:
-			break
+			if songs != None:
+				for hit in songs:
+					if hit['primary_artist']['id'] == id:
+						lyrics = lyrics_from_hit(hit)
+						if lyrics != None and lyrics != '':
+							save_lyrics(lyrics, hit['full_title'][:50].replace('/', '') + '.lyc', hit)
+			else:
+				print("Encountered an error")
+				break
+			if not next_page:
+				break
 
-		page += 1
+			page += 1
 
-print("All songs written")
+	print("All songs written")
