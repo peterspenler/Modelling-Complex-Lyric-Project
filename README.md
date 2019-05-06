@@ -1,5 +1,9 @@
 # README
 
+## Description
+There are 2 main components to this project. First is the trainer notebook which is used to scrape lyrics from genius.com, and then to use those lyrics to train a neural network language model. Second is the generator notbook which loads a trained model and generates unique lyrics using that model.
+
+## Steps to run
 There are a couple nesseccary steps to perform before using this project.
 First you should set up the appropriate conda environment. If you have an Nvidia GPU this is in the 'environment.yml' file. If not you should use the 'environment-cpu.yml' file instead to run the project only with your CPU. In addition to using this environment, to run on a CPU you must change the instances of 'torch.cuda.LongTensor' into 'torch.LongTensor'. All of these instances should be present in the 'generate_text' funcitons.
 
